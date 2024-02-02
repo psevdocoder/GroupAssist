@@ -1,0 +1,35 @@
+### GET subjects list
+GET http://localhost:8080/api/subjects/
+Content-Type: application/json
+
+### GET subject by id
+GET http://localhost:8080/api/subjects/1
+Content-Type: application/json
+
+### POST create subject
+POST http://localhost:8080/api/subjects/
+Content-Type: application/json
+
+{
+  "nameqwe": "test subject"
+}
+
+### DELETE subject by ID
+DELETE http://localhost:8080/api/subjects/id
+Content-Type: application/json
+
+### UPDATE subejct by ID
+PUT http://localhost:8080/api/subjects/1
+Content-Type: application/json
+
+{
+  "name": "SIPI"
+}
+
+### GET queues by subject id
+GET http://localhost:8080/api/queues/2
+Content-Type: application/json
+
+### GET subject's queue by queue's id
+GET http://127.0.0.1:8080/api/queues/by_subject/2/
+Content-Type: application/json
