@@ -1,14 +1,15 @@
 package domain
 
 type Queue struct {
-	ID        int    `json:"id"`
-	Title     string `json:"title"`
-	SubjectID int    `json:"subject_id"`
-	IsOpen    bool   `json:"is_open"`
+	ID        int    `json:"id,omitempty" db:"id"`
+	Title     string `json:"title" db:"title" binding:"required"`
+	SubjectID int    `json:"subject_id" db:"subject_id" binding:"required"`
+	IsOpen    bool   `json:"is_open,omitempty" db:"is_open"`
 }
 
 type UpdateQueueInput struct {
-	IsOpen bool
+	IsOpen *bool   `json:"is_open,omitempty" db:"is_open" binding:"omitempty"`
+	Title  *string `json:"title,omitempty" db:"title" binding:"omitempty"`
 }
 
 type QueuesResponse struct {

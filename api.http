@@ -11,11 +11,11 @@ POST http://localhost:8080/api/subjects/
 Content-Type: application/json
 
 {
-  "nameqwe": "test subject"
+  "name": "SIPI"
 }
 
 ### DELETE subject by ID
-DELETE http://localhost:8080/api/subjects/id
+DELETE http://localhost:8080/api/subjects/5
 Content-Type: application/json
 
 ### UPDATE subejct by ID
@@ -23,13 +23,51 @@ PUT http://localhost:8080/api/subjects/1
 Content-Type: application/json
 
 {
-  "name": "SIPI"
+  "name": "SIPI NEW"
 }
 
-### GET queues by subject id
+### GET specified queue
 GET http://localhost:8080/api/queues/2
 Content-Type: application/json
 
 ### GET subject's queue by queue's id
-GET http://127.0.0.1:8080/api/queues/by_subject/2/
+GET http://localhost:8080/api/queues/by_subject/1/
 Content-Type: application/json
+
+### DELETE queue by id
+DELETE http://localhost:8080/api/queues/
+Content-Type: application/json
+
+###CREATE queue for subject
+POST http://127.0.0.1:8080/api/queues/
+Content-Type: application/json
+
+{
+  "title": "qwe 4",
+  "subject_id": 1
+}
+
+###open/close queue by id
+PATCH http://localhost:8080/api/queues/2
+Content-Type: application/json
+
+{
+  "is_open": false
+}
+
+###change title of queue by id
+PATCH http://localhost:8080/api/queues/2
+Content-Type: application/json
+
+{
+  "titleq": "new title test dddd"
+}
+
+###change title and is_open of queue by id
+PATCH http://localhost:8080/api/queues/2
+Content-Type: application/json
+
+{
+  "title": "111new title 123",
+  "is_open": true
+}

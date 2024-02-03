@@ -9,7 +9,10 @@ CREATE TABLE IF NOT EXISTS queue
     id          SERIAL PRIMARY KEY,
     title       varchar(255) NOT NULL,
     subject_id  INTEGER,
-    is_open     BOOLEAN DEFAULT FALSE
+    is_open     BOOLEAN DEFAULT FALSE,
+    CONSTRAINT fk_subject
+        FOREIGN KEY(subject_id) REFERENCES subjects(id)
+        ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS queue_position

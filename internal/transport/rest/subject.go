@@ -21,9 +21,11 @@ func (h *Handler) InitSubjectsRoutes(api *gin.RouterGroup) {
 func (h *Handler) getAllSubjects(c *gin.Context) {
 	subjects, err := h.SubjectService.GetAll()
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"message": notFound})
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
 	}
-	c.JSON(200, subjects)
+
+	c.JSON(http.StatusOK, subjects)
 }
 
 func (h *Handler) getSubjectByID(c *gin.Context) {
@@ -65,9 +67,10 @@ func (h *Handler) deleteSubject(c *gin.Context) {
 	}
 	err = h.SubjectService.Delete(id)
 	if err != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
+		c.JSON(http.StatusNotFound, gin.H{"message": notFound})
 		return
 	}
+	c.AbortWithStatus(http.StatusNoContent)
 }
 
 func (h *Handler) updateSubject(c *gin.Context) {
@@ -85,5 +88,7 @@ func (h *Handler) updateSubject(c *gin.Context) {
 	err = h.SubjectService.Update(id, subject)
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
+		return
 	}
+	c.AbortWithStatus(http.StatusNoContent)
 }

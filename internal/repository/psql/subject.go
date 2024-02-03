@@ -2,8 +2,8 @@ package psql
 
 import (
 	"GroupAssist/internal/domain"
+	"errors"
 	"github.com/jmoiron/sqlx"
-	"log"
 )
 
 var (
@@ -25,7 +25,7 @@ func NewSubjectRepository(db *sqlx.DB) *SubjectRepository {
 }
 
 func (s *SubjectRepository) GetAll() ([]domain.Subject, error) {
-	var subjects []domain.Subject
+	subjects := make([]domain.Subject, 0)
 	err := s.db.Select(&subjects, getSubjectAll)
 	return subjects, err
 }
@@ -38,12 +38,15 @@ func (s *SubjectRepository) GetByID(id int) (domain.Subject, error) {
 
 func (s *SubjectRepository) Create(subject domain.Subject) (domain.Subject, error) {
 	err := s.db.QueryRow(createSubject, subject.SubjectName).Scan(&subject.ID, &subject.SubjectName)
-	log.Println(subject.SubjectName)
 	return subject, err
 }
 
 func (s *SubjectRepository) Delete(id int) error {
-	_, err := s.db.Exec(deleteSubjectByID, id)
+	result, err := s.db.Exec(deleteSubjectByID, id)
+	rowsAffected, _ := result.RowsAffected()
+	if rowsAffected == 0 {
+		return errors.New("not found")
+	}
 	return err
 }
 

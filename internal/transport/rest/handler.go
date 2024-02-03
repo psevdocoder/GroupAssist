@@ -6,9 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var notFound = "not found"
-var invalidRequestURL = "invalid request url"
-var invalidRequestBody = "invalid request body"
+const (
+	notFound           = "Not found"
+	invalidRequestURL  = "Invalid request url"
+	invalidRequestBody = "Invalid request body"
+)
 
 type Subject interface {
 	GetAll() ([]domain.Subject, error)
