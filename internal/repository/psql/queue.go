@@ -96,7 +96,6 @@ func (q *QueueRepository) GetByID(id int) (domain.QueueResponse, error) {
 func (q *QueueRepository) Create(queue domain.Queue) (domain.Queue, error) {
 	err := q.db.QueryRow(createQueue, queue.Title, queue.SubjectID, queue.IsOpen).Scan(
 		&queue.ID, &queue.Title, &queue.SubjectID, &queue.IsOpen)
-	log.Println(queue)
 	return queue, err
 }
 
@@ -129,8 +128,6 @@ func (q *QueueRepository) Update(id int, queue domain.UpdateQueueInput) error {
 
 	query := fmt.Sprintf("UPDATE queue SET %s WHERE id = $%d", strings.Join(queryParts, ", "), argID)
 	args = append(args, id)
-
 	_, err := q.db.Exec(query, args...)
-	log.Println(query, args)
 	return err
 }

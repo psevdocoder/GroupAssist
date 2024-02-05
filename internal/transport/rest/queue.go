@@ -17,7 +17,7 @@ func (h *Handler) InitQueuesRoutes(api *gin.RouterGroup) {
 		queues.DELETE("/:id", h.deleteQueue)
 		queues.PATCH("/:id", h.updateQueue)
 		queues.POST("/join", h.joinQueue)
-		queues.DELETE("/leave", h.leaveQueue)
+		queues.DELETE("/leave:id", h.leaveQueue)
 	}
 }
 
