@@ -11,7 +11,7 @@ POST http://localhost:8080/api/subjects/
 Content-Type: application/json
 
 {
-  "name": "SIPI"
+  "name": "OST"
 }
 
 ### DELETE subject by ID
@@ -52,7 +52,7 @@ PATCH http://localhost:8080/api/queues/2
 Content-Type: application/json
 
 {
-  "is_open": false
+  "is_open": true
 }
 
 ###change title of queue by id
@@ -60,7 +60,7 @@ PATCH http://localhost:8080/api/queues/2
 Content-Type: application/json
 
 {
-  "titleq": "new title test dddd"
+  "title": "123"
 }
 
 ###change title and is_open of queue by id

@@ -90,8 +90,6 @@ func (h *Handler) updateQueue(c *gin.Context) {
 		return
 	}
 
-	//TODO validate request body
-
 	_, err = h.QueueService.GetByID(id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"message": notFound})

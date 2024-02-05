@@ -1,5 +1,5 @@
 # Makefile
-include env.mk
+include .env
 
 migrate:
 	migrate -path ./database/migrations -database ${DB_URL} up
