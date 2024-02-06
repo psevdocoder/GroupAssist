@@ -7,7 +7,13 @@ migrate:
 migrate-down:
 	migrate -path ./database/migrations -database ${DB_URL} down
 
-run:
+run: swagger run_app
+
+swagger:
+	swag init -g .\cmd\app\main.go
+
+
+run_app:
 	go run ./cmd/app/main.go
 
 build:

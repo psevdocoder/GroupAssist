@@ -1,21 +1,278 @@
-basePath: /api/v1
-externalDocs:
-  description: OpenAPI
-  url: https://swagger.io/resources/open-api/
+definitions:
+  domain.Queue:
+    properties:
+      id:
+        type: integer
+      is_open:
+        type: boolean
+      subject_id:
+        type: integer
+      title:
+        type: string
+    required:
+    - subject_id
+    - title
+    type: object
+  domain.Subject:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  domain.UpdateQueueInput:
+    properties:
+      is_open:
+        type: boolean
+      title:
+        type: string
+    type: object
+  domain.UpdateSubjectInput:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
 host: localhost:8080
 info:
-  contact:
-    email: support@swagger.io
-    name: API Support
-    url: http://www.swagger.io/support
+  contact: {}
   description: This is a sample server celler server.
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://swagger.io/terms/
-  title: Swagger Example API
+  title: Swagger Group Assistant API
   version: "1.0"
-paths: {}
+paths:
+  /api/queues:
+    post:
+      operationId: create-queue
+      parameters:
+      - description: Queue data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Queue'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Queue'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Create queue
+      tags:
+      - queues
+  /api/queues/{id}:
+    delete:
+      operationId: delete-queue
+      parameters:
+      - description: Queue ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+      summary: Delete queue
+      tags:
+      - queues
+    get:
+      operationId: get-queue-by-id
+      parameters:
+      - description: Queue ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Queue'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+      summary: Get queue by ID
+      tags:
+      - queues
+    patch:
+      description: Allowed to use any field provided in the input body
+      operationId: update-queue
+      parameters:
+      - description: Queue
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateQueueInput'
+      - description: Queue ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Update queue
+      tags:
+      - queues
+  /api/queues/by_subject/{id}:
+    get:
+      operationId: get-all-queues
+      parameters:
+      - description: Subject ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Queue'
+            type: array
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Get all queues by subject id
+      tags:
+      - queues
+  /api/subjects:
+    delete:
+      operationId: delete-subject
+      parameters:
+      - description: Subject ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+      summary: Delete subject
+      tags:
+      - subjects
+    get:
+      operationId: get-all-subjects
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.Subject'
+            type: array
+        "500":
+          description: Internal Server Error
+      summary: Get all subjects
+      tags:
+      - subjects
+    post:
+      operationId: create-subject
+      parameters:
+      - description: Subject data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Subject'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Subject'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Create subject
+      tags:
+      - subjects
+  /api/subjects/{id}:
+    get:
+      operationId: get-subject-by-id
+      parameters:
+      - description: Subject ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.Subject'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+      summary: Get subject by ID
+      tags:
+      - subjects
+    put:
+      operationId: update-subject
+      parameters:
+      - description: Subject ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Subject data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.UpdateSubjectInput'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Update subject
+      tags:
+      - subjects
 securityDefinitions:
   BasicAuth:
     type: basic

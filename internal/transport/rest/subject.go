@@ -18,6 +18,13 @@ func (h *Handler) InitSubjectsRoutes(api *gin.RouterGroup) {
 	}
 }
 
+// @Summary Get all subjects
+// @ID get-all-subjects
+// @Produce json
+// @Success 200 {object} []domain.Subject
+// @Failure 500
+// @Tags subjects
+// @Router /api/subjects [get]
 func (h *Handler) getAllSubjects(c *gin.Context) {
 	subjects, err := h.SubjectService.GetAll()
 	if err != nil {
@@ -28,6 +35,15 @@ func (h *Handler) getAllSubjects(c *gin.Context) {
 	c.JSON(http.StatusOK, subjects)
 }
 
+// @Summary Get subject by ID
+// @ID get-subject-by-id
+// @Produce json
+// @Param id path int true "Subject ID"
+// @Success 200 {object} domain.Subject
+// @Failure 400
+// @Failure 404
+// @Tags subjects
+// @Router /api/subjects/{id} [get]
 func (h *Handler) getSubjectByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -44,6 +60,15 @@ func (h *Handler) getSubjectByID(c *gin.Context) {
 	c.JSON(200, subject)
 }
 
+// @Summary Create subject
+// @ID create-subject
+// @Produce json
+// @Param input body domain.Subject true "Subject data"
+// @Success 200 {object} domain.Subject
+// @Failure 400
+// @Failure 500
+// @Tags subjects
+// @Router /api/subjects [post]
 func (h *Handler) createSubject(c *gin.Context) {
 	var subject domain.Subject
 	if err := c.ShouldBindJSON(&subject); err != nil {
@@ -58,6 +83,15 @@ func (h *Handler) createSubject(c *gin.Context) {
 	c.JSON(200, createdSubject)
 }
 
+// @Summary Delete subject
+// @ID delete-subject
+// @Produce json
+// @Param id path int true "Subject ID"
+// @Success 204
+// @Failure 400
+// @Failure 404
+// @Tags subjects
+// @Router /api/subjects [delete]
 func (h *Handler) deleteSubject(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -73,6 +107,16 @@ func (h *Handler) deleteSubject(c *gin.Context) {
 	c.AbortWithStatus(http.StatusNoContent)
 }
 
+// @Summary Update subject
+// @ID update-subject
+// @Produce json
+// @Param id path int true "Subject ID"
+// @Param input body domain.UpdateSubjectInput true "Subject data"
+// @Success 204
+// @Failure 400
+// @Failure 500
+// @Tags subjects
+// @Router /api/subjects/{id} [put]
 func (h *Handler) updateSubject(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)

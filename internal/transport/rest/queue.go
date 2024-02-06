@@ -21,6 +21,15 @@ func (h *Handler) InitQueuesRoutes(api *gin.RouterGroup) {
 	}
 }
 
+// @Summary Get all queues by subject id
+// @ID get-all-queues
+// @Produce json
+// @Param id path int true "Subject ID"
+// @Success 200 {object} []domain.Queue
+// @Failure 400
+// @Failure 500
+// @Tags queues
+// @Router /api/queues/by_subject/{id} [get]
 func (h *Handler) getAllQueuesBySubject(c *gin.Context) {
 	subjectIDStr := c.Param("id")
 	subjectID, err := strconv.Atoi(subjectIDStr)
@@ -34,9 +43,18 @@ func (h *Handler) getAllQueuesBySubject(c *gin.Context) {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	c.JSON(200, queues)
+	c.JSON(http.StatusOK, queues)
 }
 
+// @Summary Get queue by ID
+// @ID get-queue-by-id
+// @Produce json
+// @Param id path int true "Queue ID"
+// @Success 200 {object} domain.Queue
+// @Failure 400
+// @Failure 404
+// @Tags queues
+// @Router /api/queues/{id} [get]
 func (h *Handler) getQueueByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -49,9 +67,18 @@ func (h *Handler) getQueueByID(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": notFound})
 		return
 	}
-	c.JSON(200, queue)
+	c.JSON(http.StatusOK, queue)
 }
 
+// @Summary Create queue
+// @ID create-queue
+// @Produce json
+// @Param input body domain.Queue true "Queue data"
+// @Success 200 {object} domain.Queue
+// @Failure 400
+// @Failure 500
+// @Tags queues
+// @Router /api/queues [post]
 func (h *Handler) createQueue(c *gin.Context) {
 	var input domain.Queue
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -64,9 +91,18 @@ func (h *Handler) createQueue(c *gin.Context) {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	c.JSON(200, queue)
+	c.JSON(http.StatusOK, queue)
 }
 
+// @Summary Delete queue
+// @ID delete-queue
+// @Produce json
+// @Param id path int true "Queue ID"
+// @Success 204
+// @Failure 400
+// @Failure 404
+// @Tags queues
+// @Router /api/queues/{id} [delete]
 func (h *Handler) deleteQueue(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -82,6 +118,18 @@ func (h *Handler) deleteQueue(c *gin.Context) {
 	c.AbortWithStatus(http.StatusNoContent)
 }
 
+// @Summary Update queue
+// @ID update-queue
+// @Produce json
+// @Description Allowed to use any field provided in the input body
+// @Param input body domain.UpdateQueueInput true "Queue"
+// @Param id path int true "Queue ID"
+// @Success 204
+// @Failure 400
+// @Failure 404
+// @Failure 500
+// @Tags queues
+// @Router /api/queues/{id} [patch]
 func (h *Handler) updateQueue(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
