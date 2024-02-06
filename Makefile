@@ -12,7 +12,6 @@ run: swagger run_app
 swagger:
 	swag init -g .\cmd\app\main.go
 
-
 run_app:
 	go run ./cmd/app/main.go
 
