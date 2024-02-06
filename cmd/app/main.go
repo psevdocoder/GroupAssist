@@ -11,6 +11,14 @@ import (
 	"log"
 )
 
+//	@title			Swagger Group Assistant API
+//	@version		1.0
+//	@description	This is a sample server celler server.
+
+//	@host		localhost:8080
+
+//	@securityDefinitions.basic	BasicAuth
+
 func main() {
 	pgConf := config.InitPostgres()
 	db, err := database.NewPostgresConnection(pgConf)

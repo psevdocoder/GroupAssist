@@ -1,9 +1,12 @@
 package rest
 
 import (
+	_ "GroupAssist/docs"
 	"GroupAssist/internal/domain"
 	"GroupAssist/internal/service"
 	"github.com/gin-gonic/gin"
+	"github.com/swaggo/files"       // swagger embed files
+	"github.com/swaggo/gin-swagger" // gin-swagger middleware
 )
 
 const (
@@ -49,6 +52,8 @@ func (h *Handler) Init() *gin.Engine {
 			"message": "pong",
 		})
 	})
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	return r
 }
 
