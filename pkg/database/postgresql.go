@@ -8,7 +8,7 @@ import (
 
 func NewPostgresConnection(pgConf *config.PostgresConfig) (*sqlx.DB, error) {
 	db, err := sqlx.Open("postgres", fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=%s password=%s",
-		pgConf.Host, pgConf.Port, pgConf.Username, pgConf.DBName, pgConf.SSLMode, pgConf.Password))
+		pgConf.Host, pgConf.Port, pgConf.User, pgConf.DBName, pgConf.SSL, pgConf.Password))
 	if err != nil {
 		return nil, err
 	}

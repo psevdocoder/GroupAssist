@@ -1,30 +1,30 @@
 package config
 
 import (
-	"github.com/spf13/viper"
+	"github.com/joho/godotenv"
+	"github.com/kelseyhightower/envconfig"
 	"log"
 )
 
 type PostgresConfig struct {
-	Host     string `mapstructure:"host"`
-	Port     int    `mapstructure:"port"`
-	Username string `mapstructure:"user"`
-	DBName   string `mapstructure:"database"`
-	SSLMode  string `mapstructure:"ssl"`
-	Password string `mapstructure:"password"`
+	Host     string
+	Port     int
+	User     string
+	DBName   string
+	SSL      string
+	Password string
 }
 
 func InitPostgres() *PostgresConfig {
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath("configs")
-	if err := viper.ReadInConfig(); err != nil {
+	if err := godotenv.Load(); err != nil {
 		log.Fatal(err)
 	}
+
 	var pgConfig PostgresConfig
-	if err := viper.UnmarshalKey("postgres", &pgConfig); err != nil {
+	if err := envconfig.Process("pg", &pgConfig); err != nil {
 		log.Fatal(err)
 	}
+	log.Printf("Postgres config: %+v\n", pgConfig)
 
 	return &pgConfig
 
