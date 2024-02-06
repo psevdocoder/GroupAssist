@@ -91,7 +91,7 @@ func (h *Handler) createSubject(c *gin.Context) {
 // @Failure 400
 // @Failure 404
 // @Tags subjects
-// @Router /api/subjects [delete]
+// @Router /api/subjects{id} [delete]
 func (h *Handler) deleteSubject(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
