@@ -13,14 +13,11 @@ import (
 	"log"
 )
 
-//	@title			Swagger Group Assistant API
-//	@version		1.0
-//	@description	This is a sample server celler server.
-
-//	@host		localhost:8080
-
-//	@securityDefinitions.basic	BasicAuth
-
+// @title			Swagger Group Assistant API
+// @version		1.0
+// @description	This is a sample server celler server.
+// @host		localhost:8080
+// @securityDefinitions.basic	BasicAuth
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal(err)

@@ -48,7 +48,6 @@ func NewHandler(services *service.Services) *Handler {
 
 func (h *Handler) Init(memoryCache *cache.Cache, cacheTTL time.Duration) *gin.Engine {
 	r := gin.New()
-
 	r.Use(gin.Logger(), gin2.CacheMiddleware(memoryCache, cacheTTL))
 
 	r.GET("ping/", func(c *gin.Context) {
