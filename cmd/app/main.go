@@ -7,7 +7,9 @@ import (
 	"GroupAssist/internal/transport/rest"
 	"GroupAssist/pkg/database"
 	"github.com/jmoiron/sqlx"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
+	cache "github.com/psevdocoder/InMemoryCacheTTL"
 	"log"
 )
 
@@ -20,7 +22,15 @@ import (
 //	@securityDefinitions.basic	BasicAuth
 
 func main() {
-	pgConf := config.InitPostgres()
+	if err := godotenv.Load(); err != nil {
+		log.Fatal(err)
+	}
+
+	pgConf, err := config.InitPostgres()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	db, err := database.NewPostgresConnection(pgConf)
 	if err != nil {
 		log.Fatal(err)
@@ -32,20 +42,19 @@ func main() {
 		}
 	}(db)
 
-	repositories := repository.InitRepositoties(db)
+	repositories := repository.InitRepositories(db)
 	services := service.InitServices(repositories)
-
-	//sub, err := services.Subject.getSubjectByID(1)
-	//
-	//if err != nil {
-	//	log.Println(err)
-	//}
-	//
-	//fmt.Println(sub)
 
 	handler := rest.NewHandler(services)
 
-	r := handler.Init()
+	cacheConf, err := config.InitCache()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	memoryCache := cache.New(cacheConf.SearchExpiredTime)
+
+	r := handler.Init(memoryCache, cacheConf.TTL)
 
 	handler.InitAPI(r)
 

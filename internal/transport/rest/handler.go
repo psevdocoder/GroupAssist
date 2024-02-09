@@ -4,9 +4,12 @@ import (
 	_ "GroupAssist/docs"
 	"GroupAssist/internal/domain"
 	"GroupAssist/internal/service"
+	gin2 "GroupAssist/pkg/gin"
 	"github.com/gin-gonic/gin"
+	cache "github.com/psevdocoder/InMemoryCacheTTL"
 	"github.com/swaggo/files"       // swagger embed files
 	"github.com/swaggo/gin-swagger" // gin-swagger middleware
+	"time"
 )
 
 const (
@@ -43,9 +46,10 @@ func NewHandler(services *service.Services) *Handler {
 	}
 }
 
-func (h *Handler) Init() *gin.Engine {
+func (h *Handler) Init(memoryCache *cache.Cache, cacheTTL time.Duration) *gin.Engine {
 	r := gin.New()
-	r.Use(gin.Logger())
+
+	r.Use(gin.Logger(), gin2.CacheMiddleware(memoryCache, cacheTTL))
 
 	r.GET("ping/", func(c *gin.Context) {
 		c.JSON(200, gin.H{

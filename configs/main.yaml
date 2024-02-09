@@ -1,0 +1,3 @@
+cache:
+  ttl: 10s
+  search_expired_interval: 1s

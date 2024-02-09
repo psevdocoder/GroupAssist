@@ -10,7 +10,7 @@ type Repositories struct {
 	Queue   *psql.QueueRepository
 }
 
-func InitRepositoties(db *sqlx.DB) *Repositories {
+func InitRepositories(db *sqlx.DB) *Repositories {
 	return &Repositories{
 		Subject: psql.NewSubjectRepository(db),
 		Queue:   psql.NewQueueRepository(db),

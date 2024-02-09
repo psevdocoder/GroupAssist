@@ -165,26 +165,6 @@ paths:
       tags:
       - queues
   /api/subjects:
-    delete:
-      operationId: delete-subject
-      parameters:
-      - description: Subject ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-        "404":
-          description: Not Found
-      summary: Delete subject
-      tags:
-      - subjects
     get:
       operationId: get-all-subjects
       produces:
@@ -271,6 +251,27 @@ paths:
         "500":
           description: Internal Server Error
       summary: Update subject
+      tags:
+      - subjects
+  /api/subjects{id}:
+    delete:
+      operationId: delete-subject
+      parameters:
+      - description: Subject ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+      summary: Delete subject
       tags:
       - subjects
 securityDefinitions:
