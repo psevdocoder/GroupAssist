@@ -1,7 +1,18 @@
 # GroupAssist
-### Description
-This is rewritten on Golang [GroupAssistant (also my)](https://github.com/psevdocoder/sipi_backend) RESTFul-API backend application.
+### Описание
+Бекенд переписанный на языке Go когда-то реализованного мною RESTFul-приложения [GroupAssistant](https://github.com/psevdocoder/sipi_backend).
 
-This project is made for attempting to follow clean architecture project pattern.
+Приложение для автоматизации создания очередей для сдачи работ, фиксирования посещаемости студентов, создания опросов внутри группы.
 
-Now most of the functionality is missing.
+### Особенности
+- Структура проекта следует чистой архитектуре.
+- Используется SQLX + Gin + [InMemoryCache](https://github.com/psevdocoder/InMemoryCacheTTL).
+- InMemoryCache имплементирован как Gin-Middleware для кэширования GET запросов.
+
+InMemoryCache - собственная реализация кэша в памяти для хранения записей в паре ключ-значение с TTL. После проведения нагрузочного тестирования до и после внедрения выяснилось, что кэш позволяет повысить RPS с 200 до 1000-1100 при GET запросах на один и тот же эндпоинт. 
+
+### TODO
+- [ ] Добавить пользователей, JWT-токены, разделение пользователей на роли админ, модератор, пользователь.
+- [ ] Rate limiting
+- [ ] Опросы
+- [ ] Посещаемость, журнал
