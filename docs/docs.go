@@ -257,36 +257,6 @@ const docTemplate = `{
                         "description": "Internal Server Error"
                     }
                 }
-            },
-            "delete": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "subjects"
-                ],
-                "summary": "Delete subject",
-                "operationId": "delete-subject",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Subject ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    }
-                }
             }
         },
         "/api/subjects/{id}": {
@@ -359,6 +329,38 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/api/subjects{id}": {
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subjects"
+                ],
+                "summary": "Delete subject",
+                "operationId": "delete-subject",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Subject ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
                     }
                 }
             }

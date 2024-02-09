@@ -1,7 +1,6 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 	"log"
 )
@@ -15,17 +14,11 @@ type PostgresConfig struct {
 	Password string
 }
 
-func InitPostgres() *PostgresConfig {
-	if err := godotenv.Load(); err != nil {
-		log.Fatal(err)
-	}
-
+func InitPostgres() (*PostgresConfig, error) {
 	var pgConfig PostgresConfig
 	if err := envconfig.Process("pg", &pgConfig); err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	log.Printf("Postgres config: %+v\n", pgConfig)
-
-	return &pgConfig
-
+	return &pgConfig, nil
 }
