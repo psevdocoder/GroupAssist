@@ -6,6 +6,7 @@ import (
 	"GroupAssist/internal/service"
 	"GroupAssist/internal/transport/rest"
 	"GroupAssist/pkg/database"
+	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -23,12 +24,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	pgConf, err := config.InitPostgres()
+	conf, err := config.New()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	db, err := database.NewPostgresConnection(pgConf)
+	db, err := database.NewPostgresConnection(conf)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -44,19 +45,10 @@ func main() {
 
 	handler := rest.NewHandler(services)
 
-	cacheConf, err := config.InitCache()
-	if err != nil {
-		log.Fatal(err)
-	}
+	memoryCache := cache.New(conf.Cache.SearchExpiredTime)
+	r := handler.Init(memoryCache, conf.Cache.TTL)
 
-	memoryCache := cache.New(cacheConf.SearchExpiredTime)
-
-	r := handler.Init(memoryCache, cacheConf.TTL)
-
-	handler.InitAPI(r)
-
-	err = r.Run(":8080")
-	if err != nil {
+	if err = r.Run(fmt.Sprintf(":%d", conf.Server.Port)); err != nil {
 		log.Fatal(err)
 	}
 }

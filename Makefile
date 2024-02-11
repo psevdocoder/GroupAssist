@@ -5,7 +5,7 @@ migrate:
 	migrate -path ./database/migrations -database ${DB_URL} up
 
 migrate-down:
-	migrate -path ./database/migrations -database ${DB_URL} down
+	migrate -path ./database/migrations -database ${DB_URL} down 1
 
 run: swagger run_app
 

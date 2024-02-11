@@ -6,8 +6,11 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-func NewPostgresConnection(pgConf *config.PostgresConfig) (*sqlx.DB, error) {
-	db, err := sqlx.Open("postgres", fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=%s password=%s",
+func NewPostgresConnection(config *config.Config) (*sqlx.DB, error) {
+
+	pgConf := config.Postgres
+	db, err := sqlx.Open("postgres", fmt.Sprintf(
+		"host=%s port=%d user=%s dbname=%s sslmode=%s password=%s",
 		pgConf.Host, pgConf.Port, pgConf.User, pgConf.DBName, pgConf.SSL, pgConf.Password))
 	if err != nil {
 		return nil, err

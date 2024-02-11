@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func (h *Handler) InitQueuesRoutes(api *gin.RouterGroup) {
+func (h *Handler) initQueuesRoutes(api *gin.RouterGroup) {
 	queues := api.Group("/queues")
 	{
 		queues.GET("/by_subject/:id", h.getAllQueuesBySubject)
@@ -160,9 +160,7 @@ func (h *Handler) updateQueue(c *gin.Context) {
 }
 
 func (h *Handler) joinQueue(context *gin.Context) {
-	//TODO
 }
 
 func (h *Handler) leaveQueue(context *gin.Context) {
-	//TODO
 }
