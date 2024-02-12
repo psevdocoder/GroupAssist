@@ -19,6 +19,7 @@ func (h *Handler) generateToken(c *gin.Context) {
 	var signInInput domain.SignInInput
 	if err := c.ShouldBindJSON(&signInInput); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": invalidRequestBody})
+		return
 	}
 }
 
