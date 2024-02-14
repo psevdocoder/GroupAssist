@@ -9,3 +9,12 @@ CREATE TABLE IF NOT EXISTS users (
     register_token VARCHAR(255) UNIQUE,
     is_active BOOLEAN NOT NULL DEFAULT FALSE
 );
+
+-- Миграция для хранения refresh токенов (и сессий пользоватетелей)
+CREATE TABLE IF NOT EXISTS sessions (
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    refresh_token VARCHAR(255),
+    last_used TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL,
+    ip_address VARCHAR(255) NOT NULL
+);

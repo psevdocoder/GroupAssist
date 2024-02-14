@@ -1,6 +1,9 @@
 package service
 
-import "GroupAssist/internal/repository"
+import (
+	"GroupAssist/internal/config"
+	"GroupAssist/internal/repository"
+)
 
 type Services struct {
 	Subject *Subject
@@ -9,11 +12,11 @@ type Services struct {
 	Auth    *AuthService
 }
 
-func InitServices(repositories *repository.Repositories) *Services {
+func InitServices(repositories *repository.Repositories, conf *config.Config) *Services {
 	return &Services{
 		Subject: NewSubject(repositories.Subject),
 		Queue:   NewQueue(repositories.Queue),
 		User:    NewUserService(repositories.User),
-		Auth:    NewAuthService(repositories.Auth),
+		Auth:    NewAuthService(repositories.Auth, conf),
 	}
 }

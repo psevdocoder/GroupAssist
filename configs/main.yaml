@@ -6,4 +6,5 @@ cache:
   search_expired_interval: 1s
 
 auth:
-  token_ttl: 15m
+  access_token_ttl: 15m
+  refresh_token_ttl: 720h

@@ -14,11 +14,14 @@ import (
 	"log"
 )
 
-// @title			Swagger Group Assistant API
+// @title		Group Assistant API
 // @version		1.0
 // @description	This is a sample server celler server.
 // @host		localhost:8080
 // @securityDefinitions.basic	BasicAuth
+// @securityDefinitions.apikey Bearer Token Authentication
+// @in header
+// @name Authorization
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal(err)
@@ -33,15 +36,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func(db *sqlx.DB) {
-		err = db.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
+		_ = db.Close()
 	}(db)
 
 	repositories := repository.InitRepositories(db)
-	services := service.InitServices(repositories)
+	services := service.InitServices(repositories, conf)
 
 	handler := rest.NewHandler(services)
 
@@ -51,4 +52,5 @@ func main() {
 	if err = r.Run(fmt.Sprintf(":%d", conf.Server.Port)); err != nil {
 		log.Fatal(err)
 	}
+
 }

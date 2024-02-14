@@ -2,7 +2,7 @@ package service
 
 import (
 	"GroupAssist/internal/domain"
-	register_tokens "GroupAssist/pkg/invite-tokens"
+	register_tokens "GroupAssist/pkg/randomStr"
 )
 
 type UserRepository interface {
@@ -23,7 +23,7 @@ func NewUserService(repo UserRepository) *UserService {
 }
 
 func (u *UserService) Create(createUser domain.CreateUser) (domain.CreateUser, error) {
-	createUser.RegisterToken = register_tokens.GenerateRegisterToken(32)
+	createUser.RegisterToken = register_tokens.GenerateRegisterToken()
 	return u.repo.Create(createUser)
 }
 

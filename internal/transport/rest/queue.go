@@ -3,7 +3,6 @@ package rest
 import (
 	"GroupAssist/internal/domain"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 	"strconv"
 )
@@ -87,7 +86,6 @@ func (h *Handler) createQueue(c *gin.Context) {
 	}
 	queue, err := h.QueueService.Create(input)
 	if err != nil {
-		log.Println(err)
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
@@ -151,7 +149,6 @@ func (h *Handler) updateQueue(c *gin.Context) {
 	}
 
 	err = h.QueueService.Update(id, input)
-	log.Println(err)
 	if err != nil {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return

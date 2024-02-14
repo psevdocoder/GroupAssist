@@ -13,9 +13,11 @@ import (
 )
 
 const (
-	notFound           = "Not found"
-	invalidRequestURL  = "Invalid request url"
-	invalidRequestBody = "Invalid request body"
+	notFound                      = "Not found"
+	invalidRequestURL             = "Invalid request url"
+	invalidRequestBody            = "Invalid request body"
+	providedCredentialsAreInvalid = "Provided credentials are invalid"
+	AccountAlreadyExists          = "Account with provided username already exists"
 )
 
 type Subject interface {
@@ -35,8 +37,9 @@ type Queue interface {
 }
 
 type Auth interface {
-	ApplyRegister(user domain.SignUpInput) (domain.User, error)
-	GetByCredentials(input domain.SignInInput) (domain.User, error)
+	ApplyRegister(user domain.SignUpInput) (domain.ResponseUser, error)
+	CreateToken(input domain.SignInInput, ip string) (domain.SignInResponse, error)
+	RefreshToken(token string) (domain.SignInResponse, error)
 }
 
 type User interface {
