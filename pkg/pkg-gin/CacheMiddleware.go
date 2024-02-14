@@ -1,4 +1,4 @@
-package gin
+package pkg_gin
 
 import (
 	"bytes"

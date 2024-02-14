@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func (h *Handler) InitSubjectsRoutes(api *gin.RouterGroup) {
+func (h *Handler) initSubjectsRoutes(api *gin.RouterGroup) *gin.RouterGroup {
 	subjects := api.Group("/subjects")
 	{
 		subjects.GET("/", h.getAllSubjects)
@@ -16,6 +16,7 @@ func (h *Handler) InitSubjectsRoutes(api *gin.RouterGroup) {
 		subjects.DELETE("/:id", h.deleteSubject)
 		subjects.PUT("/:id", h.updateSubject)
 	}
+	return subjects
 }
 
 // @Summary Get all subjects
@@ -31,7 +32,6 @@ func (h *Handler) getAllSubjects(c *gin.Context) {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-
 	c.JSON(http.StatusOK, subjects)
 }
 

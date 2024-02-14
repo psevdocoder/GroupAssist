@@ -6,6 +6,7 @@ import (
 	"GroupAssist/internal/service"
 	"GroupAssist/internal/transport/rest"
 	"GroupAssist/pkg/database"
+	"fmt"
 	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -13,50 +14,43 @@ import (
 	"log"
 )
 
-// @title			Swagger Group Assistant API
+// @title		Group Assistant API
 // @version		1.0
 // @description	This is a sample server celler server.
 // @host		localhost:8080
 // @securityDefinitions.basic	BasicAuth
+// @securityDefinitions.apikey Bearer Token Authentication
+// @in header
+// @name Authorization
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal(err)
 	}
 
-	pgConf, err := config.InitPostgres()
+	conf, err := config.New()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	db, err := database.NewPostgresConnection(pgConf)
+	db, err := database.NewPostgresConnection(conf)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func(db *sqlx.DB) {
-		err = db.Close()
-		if err != nil {
-			log.Fatal(err)
-		}
+		_ = db.Close()
 	}(db)
 
 	repositories := repository.InitRepositories(db)
-	services := service.InitServices(repositories)
+	services := service.InitServices(repositories, conf)
 
 	handler := rest.NewHandler(services)
 
-	cacheConf, err := config.InitCache()
-	if err != nil {
+	memoryCache := cache.New(conf.Cache.SearchExpiredTime)
+	r := handler.Init(memoryCache, conf.Cache.TTL)
+
+	if err = r.Run(fmt.Sprintf(":%d", conf.Server.Port)); err != nil {
 		log.Fatal(err)
 	}
 
-	memoryCache := cache.New(cacheConf.SearchExpiredTime)
-
-	r := handler.Init(memoryCache, cacheConf.TTL)
-
-	handler.InitAPI(r)
-
-	err = r.Run(":8080")
-	if err != nil {
-		log.Fatal(err)
-	}
 }
