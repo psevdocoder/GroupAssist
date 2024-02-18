@@ -39,7 +39,7 @@ type Queue interface {
 type Auth interface {
 	ApplyRegister(user domain.SignUpInput) (domain.ResponseUser, error)
 	CreateToken(input domain.SignInInput, ip string) (domain.SignInResponse, error)
-	RefreshToken(token string) (domain.SignInResponse, error)
+	RefreshToken(token string, ip string) (domain.SignInResponse, error)
 }
 
 type User interface {

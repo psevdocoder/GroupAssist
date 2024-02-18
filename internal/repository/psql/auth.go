@@ -35,11 +35,11 @@ func (a *AuthRepository) GetRegisterToken(id int) (string, error) {
 	return registerTokenHash, err
 }
 
-func (a *AuthRepository) GetByUsername(username string) (domain.User, error) {
-	var user domain.User
-	getUserQuery := `SELECT id, name, username, role, password_hash FROM users WHERE username=$1`
+func (a *AuthRepository) GetByUsername(username string) (domain.JwtIntermediate, error) {
+	var user domain.JwtIntermediate
+	getUserQuery := `SELECT id, username, role, password_hash FROM users WHERE username=$1`
 	err := a.db.QueryRow(getUserQuery, username).Scan(
-		&user.ID, &user.Name, &user.Username, &user.Role, &user.PasswordHash)
+		&user.UserID, &user.Username, &user.Role, &user.PasswordHash)
 	return user, err
 }
 
@@ -57,13 +57,21 @@ func (a *AuthRepository) SetRefreshToken(userID int, refreshToken string, expire
 	return err
 }
 
-func (a *AuthRepository) GetRefreshToken(token string) (domain.Session, error) {
-	var session domain.Session
-	getRefreshTokenQuery := `DELETE FROM sessions WHERE refresh_token=$1 RETURNING user_id, refresh_token, expires_at, ip_address`
+func (a *AuthRepository) GetRefreshToken(token string) (domain.JwtIntermediate, error) {
+	var session domain.JwtIntermediate
+	getRefreshTokenQuery := `
+WITH deleted_session AS (
+    DELETE FROM sessions WHERE refresh_token=$1 
+    RETURNING user_id, refresh_token, expires_at, ip_address
+)
+SELECT ds.*, u.username, u.role
+FROM deleted_session ds 
+JOIN users u ON ds.user_id = u.id
+`
 	if err := a.db.QueryRow(getRefreshTokenQuery, token).Scan(
-		&session.UserID, &session.RefreshToken, &session.ExpiresAt, &session.IP); err != nil {
-		return domain.Session{}, err
+		&session.UserID, &session.RefreshToken, &session.ExpiresAt, &session.IPAddress,
+		&session.Username, &session.Role); err != nil {
+		return domain.JwtIntermediate{}, err
 	}
-
 	return session, nil
 }
