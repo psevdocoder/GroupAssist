@@ -4,18 +4,17 @@ import (
 	"GroupAssist/internal/config"
 	"GroupAssist/internal/domain"
 	"GroupAssist/pkg/bcrypt"
-	"GroupAssist/pkg/randomStr"
+	"errors"
 	"github.com/golang-jwt/jwt/v5"
 	"time"
 )
 
 type AuthRepository interface {
 	ApplyRegister(user domain.ApplyRegister) (domain.ResponseUser, error)
-	GetByUsername(username string) (domain.User, error)
-	GetByID(id int) (domain.User, error)
+	GetByUsername(username string) (domain.JwtIntermediate, error)
 	GetRegisterToken(id int) (string, error)
 	SetRefreshToken(userID int, refreshToken string, expiresAt time.Time, ip string) error
-	GetRefreshToken(token string) (domain.Session, error)
+	GetRefreshToken(token string) (domain.JwtIntermediate, error)
 }
 
 type AuthService struct {
@@ -60,29 +59,35 @@ func (a *AuthService) CreateToken(input domain.SignInInput, ip string) (domain.S
 	return a.generateJWT(user, ip)
 }
 
-func (a *AuthService) generateJWT(user domain.User, ip string) (domain.SignInResponse, error) {
+func (a *AuthService) generateJWT(user domain.JwtIntermediate, ip string) (domain.SignInResponse, error) {
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user_id":  user.ID,
+	aToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user_id":  user.UserID,
 		"username": user.Username,
 		"role":     user.Role,
 		"exp":      time.Now().Add(time.Hour + a.authConfig.Auth.AccessTokenTTL).Unix(),
 	})
 
-	accessToken, err := token.SignedString([]byte(a.authConfig.Jwt.SecretKey))
+	accessToken, err := aToken.SignedString([]byte(a.authConfig.Jwt.SecretKey))
 	if err != nil {
 		return domain.SignInResponse{}, err
 	}
 
-	refreshToken := randomStr.GenerateRefreshToken()
+	rToken := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user_id":  user.UserID,
+		"username": user.Username,
+		"role":     user.Role,
+		"exp":      time.Now().Add(time.Hour + a.authConfig.Auth.RefreshTokenTTL).Unix(),
+	})
 
+	refreshToken, err := rToken.SignedString([]byte(a.authConfig.Jwt.SecretKey))
 	if err != nil {
 		return domain.SignInResponse{}, err
 	}
 
 	expiresAt := time.Now().Add(time.Hour + a.authConfig.Auth.RefreshTokenTTL)
 
-	if err = a.repo.SetRefreshToken(user.ID, refreshToken, expiresAt, ip); err != nil {
+	if err = a.repo.SetRefreshToken(user.UserID, refreshToken, expiresAt, ip); err != nil {
 		return domain.SignInResponse{}, err
 	}
 
@@ -92,20 +97,31 @@ func (a *AuthService) generateJWT(user domain.User, ip string) (domain.SignInRes
 	}, nil
 }
 
-func (a *AuthService) RefreshToken(token string) (domain.SignInResponse, error) {
+func (a *AuthService) RefreshToken(token string, ip string) (domain.SignInResponse, error) {
+	t, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, domain.ErrUnexpectedSigningToken
+		}
+		return []byte(a.authConfig.Jwt.SecretKey), nil
+	})
+
+	switch {
+	case errors.Is(err, jwt.ErrTokenMalformed):
+		return domain.SignInResponse{}, domain.ErrInvalidToken
+	case errors.Is(err, jwt.ErrTokenSignatureInvalid):
+		return domain.SignInResponse{}, domain.ErrInvalidSignature
+	case errors.Is(err, jwt.ErrTokenExpired) || errors.Is(err, jwt.ErrTokenNotValidYet):
+		return domain.SignInResponse{}, domain.ErrRefreshTokenExpired
+	case t.Valid:
+		break
+	default:
+		return domain.SignInResponse{}, domain.ErrUnhandledToken
+	}
+
 	session, err := a.repo.GetRefreshToken(token)
 	if err != nil {
 		return domain.SignInResponse{}, err
 	}
 
-	if session.ExpiresAt.Before(time.Now()) {
-		return domain.SignInResponse{}, domain.ErrRefreshTokenExpired
-	}
-
-	user, err := a.repo.GetByID(session.UserID)
-	if err != nil {
-		return domain.SignInResponse{}, err
-	}
-
-	return a.generateJWT(user, session.IP)
+	return a.generateJWT(session, ip)
 }

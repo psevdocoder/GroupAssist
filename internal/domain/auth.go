@@ -27,10 +27,12 @@ type RefreshTokenInput struct {
 	RefreshToken string `json:"refresh_token" binding:"required"`
 }
 
-type Session struct {
-	ID           int64     `db:"id"`
+type JwtIntermediate struct {
 	UserID       int       `db:"user_id"`
+	PasswordHash string    `db:"password_hash"`
 	RefreshToken string    `db:"refresh_token"`
 	ExpiresAt    time.Time `db:"expires_at"`
-	IP           string    `db:"ip_address"`
+	IPAddress    string    `db:"ip_address"`
+	Username     string    `db:"username"`
+	Role         int       `db:"role"`
 }

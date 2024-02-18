@@ -102,19 +102,29 @@ func (h *Handler) refreshToken(c *gin.Context) {
 		return
 	}
 
-	token, err := h.AuthService.RefreshToken(request.RefreshToken)
+	ip := c.ClientIP()
+
+	token, err := h.AuthService.RefreshToken(request.RefreshToken, ip)
 	if err != nil {
 		switch {
 		case errors.Is(err, domain.ErrRefreshTokenExpired):
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "refresh token expired"})
-			return
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		case errors.Is(err, domain.ErrInvalidSignature):
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		case errors.Is(err, domain.ErrInvalidToken):
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		case errors.Is(err, domain.ErrInvalidCredentials):
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		case errors.Is(err, domain.ErrUnhandledToken):
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		case errors.Is(err, domain.ErrUnexpectedSigningToken):
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		case errors.Is(err, sql.ErrNoRows):
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "provided refresh token is invalid"})
-			return
+			c.JSON(http.StatusUnauthorized, gin.H{"error": domain.ErrInvalidToken.Error()})
 		default:
 			c.AbortWithStatus(http.StatusInternalServerError)
-			return
 		}
+		return
 	}
 	c.JSON(http.StatusOK, token)
 }
