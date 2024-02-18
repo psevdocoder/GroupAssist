@@ -12,7 +12,6 @@ import (
 type AuthRepository interface {
 	ApplyRegister(user domain.ApplyRegister) (domain.ResponseUser, error)
 	GetByUsername(username string) (domain.JwtIntermediate, error)
-	GetByID(id int) (domain.User, error)
 	GetRegisterToken(id int) (string, error)
 	SetRefreshToken(userID int, refreshToken string, expiresAt time.Time, ip string) error
 	GetRefreshToken(token string) (domain.JwtIntermediate, error)
