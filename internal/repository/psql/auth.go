@@ -3,7 +3,6 @@ package psql
 import (
 	"GroupAssist/internal/domain"
 	"github.com/jmoiron/sqlx"
-	"time"
 )
 
 type AuthRepository struct {
@@ -43,9 +42,9 @@ func (a *AuthRepository) GetByUsername(username string) (domain.JwtIntermediate,
 	return user, err
 }
 
-func (a *AuthRepository) SetRefreshToken(userID int, refreshToken string, expiresAt time.Time, ip string) error {
-	query := `INSERT INTO sessions (user_id, refresh_token, expires_at, ip_address) VALUES ($1, $2, $3, $4)`
-	_, err := a.db.Exec(query, userID, refreshToken, expiresAt, ip)
+func (a *AuthRepository) SetRefreshToken(userID int, refreshToken string, ip string) error {
+	query := `INSERT INTO sessions (user_id, refresh_token, ip_address) VALUES ($1, $2, $3)`
+	_, err := a.db.Exec(query, userID, refreshToken, ip)
 	return err
 }
 
@@ -54,14 +53,14 @@ func (a *AuthRepository) GetRefreshToken(token string) (domain.JwtIntermediate, 
 	getRefreshTokenQuery := `
 WITH deleted_session AS (
     DELETE FROM sessions WHERE refresh_token=$1 
-    RETURNING user_id, refresh_token, expires_at, ip_address
+    RETURNING user_id, refresh_token, ip_address
 )
 SELECT ds.*, u.username, u.role
 FROM deleted_session ds 
 JOIN users u ON ds.user_id = u.id
 `
 	if err := a.db.QueryRow(getRefreshTokenQuery, token).Scan(
-		&session.UserID, &session.RefreshToken, &session.ExpiresAt, &session.IPAddress,
+		&session.UserID, &session.RefreshToken, &session.IPAddress,
 		&session.Username, &session.Role); err != nil {
 		return domain.JwtIntermediate{}, err
 	}

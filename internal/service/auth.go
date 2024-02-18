@@ -13,7 +13,7 @@ type AuthRepository interface {
 	ApplyRegister(user domain.ApplyRegister) (domain.ResponseUser, error)
 	GetByUsername(username string) (domain.JwtIntermediate, error)
 	GetRegisterToken(id int) (string, error)
-	SetRefreshToken(userID int, refreshToken string, expiresAt time.Time, ip string) error
+	SetRefreshToken(userID int, refreshToken string, ip string) error
 	GetRefreshToken(token string) (domain.JwtIntermediate, error)
 }
 
@@ -85,9 +85,7 @@ func (a *AuthService) generateJWT(user domain.JwtIntermediate, ip string) (domai
 		return domain.SignInResponse{}, err
 	}
 
-	expiresAt := time.Now().Add(time.Hour + a.authConfig.Auth.RefreshTokenTTL)
-
-	if err = a.repo.SetRefreshToken(user.UserID, refreshToken, expiresAt, ip); err != nil {
+	if err = a.repo.SetRefreshToken(user.UserID, refreshToken, ip); err != nil {
 		return domain.SignInResponse{}, err
 	}
 

@@ -1,7 +1,5 @@
 package domain
 
-import "time"
-
 type SignUpInput struct {
 	Username      string `json:"username" binding:"required"`
 	Password      string `json:"password" binding:"required,alphanum,min=12,max=48"`
@@ -28,11 +26,10 @@ type RefreshTokenInput struct {
 }
 
 type JwtIntermediate struct {
-	UserID       int       `db:"user_id"`
-	PasswordHash string    `db:"password_hash"`
-	RefreshToken string    `db:"refresh_token"`
-	ExpiresAt    time.Time `db:"expires_at"`
-	IPAddress    string    `db:"ip_address"`
-	Username     string    `db:"username"`
-	Role         int       `db:"role"`
+	UserID       int    `db:"user_id"`
+	PasswordHash string `db:"password_hash"`
+	RefreshToken string `db:"refresh_token"`
+	IPAddress    string `db:"ip_address"`
+	Username     string `db:"username"`
+	Role         int    `db:"role"`
 }
