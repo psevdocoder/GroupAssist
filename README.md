@@ -9,7 +9,12 @@
 - Используется SQLX + Gin + [InMemoryCache](https://github.com/psevdocoder/InMemoryCacheTTL).
 - InMemoryCache имплементирован как Gin-Middleware для кэширования GET запросов.
 
-InMemoryCache - собственная реализация кэша в памяти для хранения записей в паре ключ-значение с TTL. После проведения нагрузочного тестирования выяснилось, что кэш позволяет повысить RPS с 200 до 1000-1100 при GET запросах на один и тот же эндпоинт. 
+InMemoryCache - собственная реализация кэша в памяти для хранения записей в паре ключ-значение с TTL. После проведения нагрузочного тестирования выяснилось, что кэш позволяет повысить RPS с 500 до 1000-1100 при GET запросах на один и тот же эндпоинт.
+
+**До**
+![Before](https://github.com/psevdocoder/GroupAssist/blob/master/photo_2024-02-05_14-50-10.jpg)
+**После**
+![After](https://github.com/psevdocoder/GroupAssist/blob/master/photo_2024-02-08_22-04-48.jpg)
 
 ### TODO
 - [x] Кэширование GET запросов с TTL.
